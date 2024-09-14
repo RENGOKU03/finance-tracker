@@ -1,5 +1,4 @@
 .container {
-  background-color: rgb(112, 222, 222);
   padding: 1rem;
   border-radius: 1rem;
   max-width: 95%;
@@ -19,6 +18,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
 }
 .header p {
   font-size: 2rem;
@@ -76,4 +76,39 @@
 }
 label {
   font-size: 1.4rem;
+}
+.error {
+  color: red;
+  font-size: 3rem;
+  font-weight: 800;
+}
+.errordiv {
+  position: absolute;
+  width: 80%;
+  text-align: center;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  min-height: 6rem;
+  border-radius: 0.5rem;
+  border: black 2px solid;
+  background-color: wheat;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+  box-shadow: black 0px 5px 15px;
+  padding: 0.3rem;
+}
+.errordiv button {
+  padding: 1rem 1.5rem;
+  font-size: 1.5rem;
+  background-color: rgb(14, 14, 14);
+  border: none;
+  border-radius: 0.5rem;
+  color: white;
+}
+.errordiv button:hover {
+  background-color: #ffffff;
+  color: black;
 }

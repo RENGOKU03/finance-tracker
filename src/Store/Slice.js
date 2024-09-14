@@ -2,9 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   addExpense: false,
   expensesList: [],
-  totalExpense: 0,
-  totalIncome: 0,
-  totalBalance: 0,
+  incomes: 0,
+  expenses: 0,
 };
 
 const expenseSlice = createSlice({
@@ -20,6 +19,14 @@ const expenseSlice = createSlice({
     },
     addTransaction: (state, action) => {
       state.expensesList.push(action.payload);
+      if (action.payload.type === "income") {
+        const sum = state.incomes + action.payload.amount;
+        state.incomes = sum;
+      }
+      if (action.payload.type === "expense") {
+        const sum = state.expenses + action.payload.amount;
+        state.expenses = sum;
+      }
     },
   },
 });

@@ -8,28 +8,35 @@ const AddExpense = () => {
   const descRef = useRef("");
   const amountRef = useRef("");
   const [selectedValue, setSelectedValue] = useState("income");
+  const [bgColor, setBgColor] = useState("#70dede");
+  const [error, setError] = useState("");
   function handleCloseTransaction() {
     dispatch(falseAddTransaction());
   }
   function handleRadioChange(selected) {
     setSelectedValue(selected);
-    console.log(selected);
+    if (selected === "expense") setBgColor("#ff7676");
+    else setBgColor("#70dede");
   }
   function handleAddTransaction(e) {
     e.preventDefault();
     console.log("clicked");
-
+    setError("");
     const desc = descRef.current.value;
-    const amount = amountRef.current.value;
     const type = selectedValue;
-    // if (desc === "" || amount === "" || type === "") return;
-    // if (amount < 0) return;
+    let amount = amountRef.current.value;
+    amount = parseFloat(amount);
+
+    if (desc === "" || amount === "" || type === "")
+      return setError("Please fill all fields");
+    if (isNaN(amount) || amount < 0)
+      return setError("Amount should be a Positve Number");
     dispatch(addTransaction({ desc, amount, type }));
     descRef.current.value = "";
     amountRef.current.value = "";
   }
   return (
-    <div className={styles.container}>
+    <div className={styles.container} style={{ backgroundColor: bgColor }}>
       <div className={styles.header}>
         <p>Add New Transaction</p>
         <button onClick={handleCloseTransaction}>X</button>
@@ -59,7 +66,9 @@ const AddExpense = () => {
         />
       </div>
       <div className={styles.containerButton}>
-        <button className={styles.subButton}>Clear</button>
+        <button className={styles.subButton} onClick={handleCloseTransaction}>
+          Cancel
+        </button>
         <button
           className={styles.subButton}
           onClick={(e) => handleAddTransaction(e)}
@@ -67,6 +76,13 @@ const AddExpense = () => {
           Add
         </button>
       </div>
+
+      {error && (
+        <div className={styles.errordiv}>
+          <p className={styles.error}>{error}</p>
+          <button onClick={() => setError(false)}>Ok</button>
+        </div>
+      )}
     </div>
   );
 };

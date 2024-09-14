@@ -8,8 +8,6 @@ import { useSelector } from "react-redux";
 
 function App() {
   const addExpense = useSelector((state) => state.expense.addExpense);
-  const Transaction = useSelector((state) => state.expense.expensesList);
-  console.log(Transaction);
 
   return (
     <div>
