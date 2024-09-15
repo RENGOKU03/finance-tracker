@@ -5,6 +5,7 @@ import Stats from "./components/Stats";
 import "./index.css";
 import ExpensesTab from "./components/ExpensesTab";
 import { useSelector } from "react-redux";
+import Login from "./components/Login";
 
 function App() {
   const addExpense = useSelector((state) => state.expense.addExpense);

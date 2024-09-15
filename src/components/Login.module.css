@@ -1,0 +1,17 @@
+.userDiv {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user {
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-style: italic;
+}
+
+img {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+}
