@@ -1,26 +1,32 @@
 import React, { useRef, useState } from "react";
 import styles from "./AddExpense.module.css";
 import { addTransaction, falseAddTransaction } from "../Store/Slice";
+import { addDoc, collection } from "firebase/firestore";
+import { db } from "../firebase/firebase";
 import { useDispatch } from "react-redux";
 
 const AddExpense = () => {
-  const dispatch = useDispatch();
-  const descRef = useRef("");
-  const amountRef = useRef("");
   const [selectedValue, setSelectedValue] = useState("income");
   const [bgColor, setBgColor] = useState("#70dede");
   const [error, setError] = useState("");
+
+  const dispatch = useDispatch();
+
+  const descRef = useRef("");
+  const amountRef = useRef("");
+
   function handleCloseTransaction() {
     dispatch(falseAddTransaction());
   }
+
   function handleRadioChange(selected) {
     setSelectedValue(selected);
     if (selected === "expense") setBgColor("#ff7676");
     else setBgColor("#70dede");
   }
+
   function handleAddTransaction(e) {
     e.preventDefault();
-    console.log("clicked");
     setError("");
     const desc = descRef.current.value;
     const type = selectedValue;
@@ -31,10 +37,25 @@ const AddExpense = () => {
       return setError("Please fill all fields");
     if (isNaN(amount) || amount < 0)
       return setError("Amount should be a Positve Number");
-    dispatch(addTransaction({ desc, amount, type }));
+    addToFirebase(desc, type, amount);
+    dispatch(addTransaction({ type, desc, amount }));
     descRef.current.value = "";
     amountRef.current.value = "";
   }
+
+  async function addToFirebase(desc, type, amount) {
+    try {
+      await addDoc(collection(db, "expenses"), {
+        desc: desc,
+        type: type,
+        amount: amount,
+      });
+      console.log("Added Successfully");
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
   return (
     <div className={styles.container} style={{ backgroundColor: bgColor }}>
       <div className={styles.header}>
