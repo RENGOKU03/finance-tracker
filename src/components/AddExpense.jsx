@@ -2,8 +2,9 @@ import React, { useRef, useState } from "react";
 import styles from "./AddExpense.module.css";
 import { addTransaction, falseAddTransaction } from "../Store/Slice";
 import { addDoc, collection } from "firebase/firestore";
-import { db } from "../firebase/firebase";
+import { auth, db } from "../firebase/firebase";
 import { useDispatch } from "react-redux";
+import { current } from "@reduxjs/toolkit";
 
 const AddExpense = () => {
   const [selectedValue, setSelectedValue] = useState("income");
@@ -37,15 +38,22 @@ const AddExpense = () => {
       return setError("Please fill all fields");
     if (isNaN(amount) || amount < 0)
       return setError("Amount should be a Positve Number");
-    addToFirebase(desc, type, amount);
-    dispatch(addTransaction({ type, desc, amount }));
-    descRef.current.value = "";
-    amountRef.current.value = "";
+    const currentUser = auth.currentUser;
+    console.log(currentUser);
+
+    if (currentUser) {
+      addToFirebase(desc, type, amount, currentUser);
+      dispatch(addTransaction({ type, desc, amount }));
+      descRef.current.value = "";
+      amountRef.current.value = "";
+    } else {
+      setError("Please Login first");
+    }
   }
 
-  async function addToFirebase(desc, type, amount) {
+  async function addToFirebase(desc, type, amount, currentUser) {
     try {
-      await addDoc(collection(db, "expenses"), {
+      await addDoc(collection(db, "users", currentUser.uid, "expenses"), {
         desc: desc,
         type: type,
         amount: amount,

@@ -1,11 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./ExpensesTab.module.css";
 import { useSelector } from "react-redux";
 
 const ExpensesTab = () => {
+  const [expenses, setExpenses] = useState([]);
+  const [incomes, setIncomes] = useState([]);
   const data = useSelector((state) => state.expense.expensesList);
-  const expenses = data.filter((item) => item.type === "expense");
-  const incomes = data.filter((item) => item.type === "income");
+
+  function getDataFromRedux() {
+    const expenses = data.filter((item) => item.type === "expense");
+    const incomes = data.filter((item) => item.type === "income");
+    setExpenses(expenses);
+    setIncomes(incomes);
+  }
+
+  useEffect(() => {
+    getDataFromRedux();
+  }, [data]);
   return (
     <div className={styles.container}>
       <div className={styles.main}>

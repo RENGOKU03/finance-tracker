@@ -1,34 +1,40 @@
-import { signInWithPopup, signOut } from "firebase/auth";
+import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 import React, { useEffect, useState } from "react";
 import { auth, provider } from "../firebase/firebase";
 import styles from "./Login.module.css";
+import { useDispatch } from "react-redux";
+import { addLoggedUser, addTransaction } from "../Store/Slice";
 
 const Login = () => {
   const [user, setUser] = useState(null);
-  const [toggleLogout, settoggleLogout] = useState(true);
-  function getCurrentUser() {
-    const currentUser = auth.currentUser;
-    setUser(currentUser);
-  }
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    getCurrentUser();
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+    });
+    if (user) {
+      dispatch(addLoggedUser(true));
+    }
+    return () => unsubscribe();
   }, []);
+
   async function loginGoogle() {
     try {
-      const response = await signInWithPopup(auth, provider);
-      getCurrentUser();
+      await signInWithPopup(auth, provider);
+      dispatch(addLoggedUser(true));
     } catch (e) {
-      console.error(e);
+      console.error("login Failed", e);
     }
   }
+
   async function handleLogout() {
     try {
       await signOut(auth);
-    } catch {
-      console.error(e);
-    } finally {
-      getCurrentUser();
+      dispatch(addTransaction({ type: "logout" }));
+      dispatch(addLoggedUser(false));
+    } catch (e) {
+      console.error("logout Failed.", e);
     }
   }
   return (
@@ -37,9 +43,9 @@ const Login = () => {
         <button onClick={loginGoogle}>Login With Google</button>
       ) : (
         <div className={styles.userDiv}>
-          <img src={user?.photoURL} alt="" />
+          <img src={user?.photoURL} alt="user-avatar" />
           <p className={styles.user}>{user?.displayName}</p>
-          {toggleLogout && <button onClick={handleLogout}>Logout</button>}
+          <button onClick={handleLogout}>Logout</button>
         </div>
       )}
     </div>
