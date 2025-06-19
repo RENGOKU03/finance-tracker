@@ -1,7 +1,6 @@
 import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 import React, { useEffect, useState } from "react";
 import { auth, provider } from "../firebase/firebase";
-import styles from "./Login.module.css";
 import { useDispatch } from "react-redux";
 import { addLoggedUser, addTransaction } from "../Store/Slice";
 
@@ -37,18 +36,34 @@ const Login = () => {
       console.error("logout Failed.", e);
     }
   }
+
   return (
     <div>
       {user === null ? (
-        <button onClick={loginGoogle}>Login With Google</button>
+        <button
+          onClick={loginGoogle}
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+        >
+          Login With Google
+        </button>
       ) : (
-        <div className={styles.userDiv}>
-          <img src={user?.photoURL} alt="user-avatar" />
-          <p className={styles.user}>{user?.displayName}</p>
-          <button onClick={handleLogout}>Logout</button>
+        <div className="flex items-center gap-4">
+          <img
+            src={user?.photoURL}
+            alt="user-avatar"
+            className="w-12 h-12 rounded-full"
+          />
+          <p className="text-xl font-bold italic">{user?.displayName}</p>
+          <button
+            onClick={handleLogout}
+            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+          >
+            Logout
+          </button>
         </div>
       )}
     </div>
   );
 };
+
 export default Login;

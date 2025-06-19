@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+
 const initialState = {
   addExpense: false,
   expensesList: [],
@@ -18,28 +19,26 @@ const expenseSlice = createSlice({
     falseAddTransaction: (state) => {
       state.addExpense = false;
     },
-    addTransaction: (state, action) => {
-      const existingTransaction = state.expensesList.find(
-        (transaction) => transaction.id === action.payload.id
-      );
 
-      if (existingTransaction) {
-        // Skip adding the transaction if it already exists
-        return;
-      }
-      if (action.payload.type === "logout") {
+    addTransaction: (state, action) => {
+      const { id, type, amount, desc } = action.payload;
+
+      if (type === "logout") {
         state.expensesList = [];
         state.incomes = 0;
         state.expenses = 0;
+        return;
       }
-      state.expensesList.push(action.payload);
-      if (action.payload.type === "income") {
-        const sum = state.incomes + action.payload.amount;
-        state.incomes = sum;
-      }
-      if (action.payload.type === "expense") {
-        const sum = state.expenses + action.payload.amount;
-        state.expenses = sum;
+
+      const exists = state.expensesList.some((item) => item.id === id);
+      if (exists) return;
+
+      state.expensesList.push({ id, type, amount, desc });
+
+      if (type === "income") {
+        state.incomes += amount;
+      } else if (type === "expense") {
+        state.expenses += amount;
       }
     },
 
@@ -55,4 +54,5 @@ export const {
   falseAddTransaction,
   addLoggedUser,
 } = expenseSlice.actions;
+
 export default expenseSlice.reducer;
