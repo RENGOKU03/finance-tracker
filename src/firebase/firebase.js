@@ -1,7 +1,10 @@
+// firebase/firebase.js
 import { initializeApp } from "firebase/app";
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { getAuth, GoogleAuthProvider } from "firebase/auth"; // <--- Add GoogleAuthProvider here
 import { getFirestore } from "firebase/firestore";
 
+// Your Firebase configuration
+// IMPORTANT: Replace these with your actual project's configuration from Firebase Console
 const firebaseConfig = {
   apiKey: "AIzaSyAnlXzQmseHUpM6nGy4OVxyYNsZFfuwSx0",
   authDomain: "expense-tracker-7a2ee.firebaseapp.com",
@@ -12,9 +15,12 @@ const firebaseConfig = {
   measurementId: "G-ZLZJ5PDR2E",
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const provider = new GoogleAuthProvider();
-const auth = getAuth();
-const db = getFirestore(app);
 
-export { auth, signInWithPopup, provider, db };
+// Initialize Firebase services
+export const auth = getAuth(app);
+export const db = getFirestore(app);
+
+// Initialize Google Auth Provider <--- Add this line
+export const provider = new GoogleAuthProvider();

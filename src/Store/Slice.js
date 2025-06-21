@@ -1,3 +1,4 @@
+// Store/Slice.js
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
@@ -6,35 +7,35 @@ const initialState = {
   incomes: 0,
   expenses: 0,
   loggedUser: false,
+  isLoading: false, // <-- New: Indicates if data is being loaded
+  hasError: null,   // <-- New: Stores any error message
 };
 
 const expenseSlice = createSlice({
   name: "expenses",
   initialState,
   reducers: {
+    // Toggles the visibility of the "Add Expense" form/modal
     trueAddTransaction: (state) => {
       state.addExpense = true;
     },
-
     falseAddTransaction: (state) => {
       state.addExpense = false;
     },
 
+    // Adds a single transaction to the list and updates totals
     addTransaction: (state, action) => {
-      const { id, type, amount, desc } = action.payload;
+      const { id, type, amount, desc, time } = action.payload; // Including 'time' for display
 
-      if (type === "logout") {
-        state.expensesList = [];
-        state.incomes = 0;
-        state.expenses = 0;
-        return;
-      }
-
+      // Prevent adding duplicates if an item with the same ID already exists.
+      // This is crucial when fetching existing data from Firebase.
       const exists = state.expensesList.some((item) => item.id === id);
       if (exists) return;
 
-      state.expensesList.push({ id, type, amount, desc });
+      // Add the new transaction
+      state.expensesList.push({ id, type, amount, desc, time });
 
+      // Update income/expense totals
       if (type === "income") {
         state.incomes += amount;
       } else if (type === "expense") {
@@ -42,8 +43,25 @@ const expenseSlice = createSlice({
       }
     },
 
+    // Sets the user's login status
     addLoggedUser: (state, action) => {
       state.loggedUser = action.payload;
+    },
+
+    // --- New Reducers for UI/UX Feedback ---
+    // Sets the loading state (e.g., when fetching data from Firebase)
+    setLoading: (state, action) => {
+      state.isLoading = action.payload;
+    },
+    // Sets an error message if an operation fails
+    setError: (state, action) => {
+      state.hasError = action.payload;
+    },
+    // Clears all transactions and resets totals, useful on logout
+    clearAllTransactions: (state) => {
+      state.expensesList = [];
+      state.incomes = 0;
+      state.expenses = 0;
     },
   },
 });
@@ -53,6 +71,9 @@ export const {
   trueAddTransaction,
   falseAddTransaction,
   addLoggedUser,
+  setLoading,         // Export new loading action
+  setError,           // Export new error action
+  clearAllTransactions, // Export new clear action
 } = expenseSlice.actions;
 
 export default expenseSlice.reducer;

@@ -1,5 +1,6 @@
+// Store/store.js
 import { configureStore } from "@reduxjs/toolkit";
-import expenseReducer from "./Slice"
+import expenseReducer from "./Slice";
 
 const store = configureStore({
     reducer:{
@@ -7,4 +8,4 @@ const store = configureStore({
     }
 })
 
-export default store
+export default store;
