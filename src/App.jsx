@@ -1,18 +1,22 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
-import AddExpense from './components/AddExpense';
-import Navbar from './components/Navbar';
-import Stats from './components/Stats';
-import Chart from './components/Chart';
-import TransactionList from './components/TransactionList';
-import { motion, AnimatePresence } from 'framer-motion';
+import React from "react";
+import useFetchFirebase from "./hooks/useFetchFirebase";
+import { useSelector } from "react-redux";
+import AddExpense from "./components/AddExpense/AddExpense";
+import Navbar from "./components/Navbar";
+import Stats from "./components/Stats";
+import Chart from "./components/Chart";
+import TransactionList from "./components/TransactionList";
+import { motion, AnimatePresence } from "framer-motion";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
+  useFetchFirebase();
   const addExpense = useSelector((state) => state.expense.addExpense);
   const expensesList = useSelector((state) => state.expense.expensesList);
 
-  const expenses = expensesList.filter((item) => item.type === 'expense');
-  const incomes = expensesList.filter((item) => item.type === 'income');
+  const expenses = expensesList.filter((item) => item.type === "expense");
+  const incomes = expensesList.filter((item) => item.type === "income");
 
   return (
     <div
@@ -24,19 +28,19 @@ const App = () => {
         className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/30 rounded-full mix-blend-screen filter blur-3xl animate-blob"
         initial={{ scale: 0.5, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
+        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
       ></motion.div>
       <motion.div
         className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-blue-500/30 rounded-full mix-blend-screen filter blur-3xl animate-blob animation-delay-2000"
         initial={{ scale: 0.5, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
+        transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
       ></motion.div>
       <motion.div
         className="absolute top-1/2 left-0 w-72 h-72 bg-fuchsia-500/30 rounded-full mix-blend-screen filter blur-3xl animate-blob animation-delay-4000"
         initial={{ scale: 0.5, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 11, repeat: Infinity, ease: 'linear' }}
+        transition={{ duration: 11, repeat: Infinity, ease: "linear" }}
       ></motion.div>
 
       <div className="relative z-10 w-full max-w-7xl mx-auto space-y-6 md:space-y-8 lg:space-y-10">
@@ -68,6 +72,7 @@ const App = () => {
           <TransactionList items={expenses} type="expense" title="Expenses" />
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };

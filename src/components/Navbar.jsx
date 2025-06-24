@@ -1,9 +1,8 @@
-import React from 'react';
-import { useDispatch } from 'react-redux';
-import { trueAddTransaction } from '../Store/Slice';
-import Login from './Login';
-import FetchFirebase from './FetchFirebase';
-import { motion } from 'framer-motion';
+import React from "react";
+import { useDispatch } from "react-redux";
+import { trueAddTransaction } from "../Store/Slice";
+import Login from "./Login";
+import { motion } from "framer-motion";
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -18,7 +17,7 @@ const Navbar = () => {
       y: 0,
       opacity: 1,
       transition: {
-        type: 'spring',
+        type: "spring",
         stiffness: 100,
         damping: 15,
         delay: 0.1,
@@ -29,11 +28,11 @@ const Navbar = () => {
   const addButtonVariants = {
     hover: {
       scale: 1.08,
-      boxShadow: '0 8px 25px rgba(255,100,200,0.4)',
+      boxShadow: "0 8px 25px rgba(255,100,200,0.4)",
       y: -3,
-      transition: { type: 'spring', stiffness: 300, damping: 10 },
+      transition: { type: "spring", stiffness: 300, damping: 10 },
     },
-    tap: { scale: 0.95, y: 0, boxShadow: '0 2px 8px rgba(0,0,0,0.1)' },
+    tap: { scale: 0.95, y: 0, boxShadow: "0 2px 8px rgba(0,0,0,0.1)" },
   };
 
   return (
@@ -53,9 +52,11 @@ const Navbar = () => {
                    drop-shadow-lg leading-tight text-center sm:text-left"
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.4, duration: 0.8, ease: 'easeOut' }}
+        transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
       >
-        Expense<br className="sm:hidden" />Tracker
+        Expense
+        <br className="sm:hidden" />
+        Tracker
       </motion.h1>
 
       {/* Buttons */}
@@ -71,7 +72,7 @@ const Navbar = () => {
           whileHover="hover"
           whileTap="tap"
         >
-          <div className="flex justify-center items-center gap-2">
+          <div className="flex justify-center items-center gap-2 cursor-pointer">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-5 w-5 md:h-6 md:w-6"
@@ -80,21 +81,21 @@ const Navbar = () => {
               stroke="currentColor"
               strokeWidth={2}
             >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 4v16m8-8H4"
+              />
             </svg>
-            <span>Add</span>
+            <span>Add Transaction</span>
           </div>
         </motion.button>
 
         {/* Login Block with Username */}
         <div className="w-full sm:w-auto min-w-[180px] flex flex-col items-center justify-center gap-2 text-center">
-          <p className="text-sm text-white/80">Welcome, <span className="font-semibold">User</span></p>
           <Login />
         </div>
       </div>
-
-      {/* Firebase Fetch Handler (non-visual) */}
-      <FetchFirebase />
     </motion.div>
   );
 };

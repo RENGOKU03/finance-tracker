@@ -7,8 +7,8 @@ const initialState = {
   incomes: 0,
   expenses: 0,
   loggedUser: false,
-  isLoading: false, // <-- New: Indicates if data is being loaded
-  hasError: null,   // <-- New: Stores any error message
+  isLoading: false,
+  hasError: null,
 };
 
 const expenseSlice = createSlice({
@@ -25,7 +25,7 @@ const expenseSlice = createSlice({
 
     // Adds a single transaction to the list and updates totals
     addTransaction: (state, action) => {
-      const { id, type, amount, desc, time } = action.payload; // Including 'time' for display
+      const { id, type, amount, desc, date } = action.payload; // Including 'time' for display
 
       // Prevent adding duplicates if an item with the same ID already exists.
       // This is crucial when fetching existing data from Firebase.
@@ -33,7 +33,7 @@ const expenseSlice = createSlice({
       if (exists) return;
 
       // Add the new transaction
-      state.expensesList.push({ id, type, amount, desc, time });
+      state.expensesList.push({ id, type, amount, desc, date });
 
       // Update income/expense totals
       if (type === "income") {
@@ -63,6 +63,27 @@ const expenseSlice = createSlice({
       state.incomes = 0;
       state.expenses = 0;
     },
+
+    // Deletes a transaction and updates totals
+    deleteTransaction: (state, action) => {
+      const idToDelete = action.payload;
+      const transactionToDelete = state.expensesList.find(
+        (transaction) => transaction.id === idToDelete
+      );
+
+      if (transactionToDelete) {
+        // Adjust income/expense totals
+        if (transactionToDelete.type === "income") {
+          state.incomes -= transactionToDelete.amount;
+        } else if (transactionToDelete.type === "expense") {
+          state.expenses -= transactionToDelete.amount;
+        }
+        // Remove the transaction from the list
+        state.expensesList = state.expensesList.filter(
+          (transaction) => transaction.id !== idToDelete
+        );
+      }
+    },
   },
 });
 
@@ -71,9 +92,9 @@ export const {
   trueAddTransaction,
   falseAddTransaction,
   addLoggedUser,
-  setLoading,         // Export new loading action
-  setError,           // Export new error action
-  clearAllTransactions, // Export new clear action
+  setLoading,
+  setError,
+  clearAllTransactions,
+  deleteTransaction,
 } = expenseSlice.actions;
-
 export default expenseSlice.reducer;
